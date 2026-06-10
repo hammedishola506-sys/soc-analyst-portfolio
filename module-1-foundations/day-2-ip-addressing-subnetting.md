@@ -1,174 +1,34 @@
-# Module 1 – Networking Foundations
-## Day 2 – IP Addressing and Subnetting
+# Day 2: Core Networking Fundamentals — IP Addressing & Subnetting
 
-This document summarizes the networking concepts learned about IP addressing and subnetting and how they relate to security analysis.
-
----
-
-## 1. Public vs Private IP Addresses
-
-IP addresses uniquely identify devices on a network.
-
-### Private IP Ranges (RFC 1918)
-
-Private IP addresses are used inside internal networks and are not routable on the public internet.
-
-10.0.0.0 – 10.255.255.255 (/8)
-
-172.16.0.0 – 172.31.255.255 (/12)
-
-192.168.0.0 – 192.168.255.255 (/16)
-
-Example private address:
-
-192.168.1.10
-
-### Public IP Address
-
-Public IP addresses are globally routable on the internet.
-
-Example:
-
-8.8.8.8
+## Technical Overview
+A Security Operations Center (SOC) Analyst must possess a granular understanding of IP addressing, subnet masking, and CIDR notation. Network segmentation is one of the primary defensive barriers an enterprise uses to restrict lateral movement during an active breach. This module covers core network boundary logic and traffic segregation tracking.
 
 ---
 
-## 2. Special IPv4 Addresses
+## 🧭 Subnet Architecture & Boundary Analysis
 
-### Loopback Address
+### 1. IPv4 Architecture Fundamentals
+* **Structure:** 32-bit logical address broken down into four 8-bit octets separated by dots.
+* **Component Split:** Every IP address is divided into a **Network ID** (routing path) and a **Host ID** (specific endpoint device).
 
-127.0.0.1
+### 2. Classless Inter-Domain Routing (CIDR)
+* **Mechanics:** CIDR notation specifies exactly how many bits of an IP address belong to the network identifier.
+* **Example Analysis (`/24`):** A subnet mask of `255.255.255.0` reserves 24 bits for the network, leaving 8 bits for hosts ($2^8 - 2 = 254$ usable host addresses). 
 
-Used for a computer to communicate with itself (localhost).
-
----
-
-### APIPA (Automatic Private IP Addressing)
-
-Range:
-
-169.254.0.0 – 169.254.255.255
-
-This occurs when a device cannot reach a DHCP server and automatically assigns itself an address.
+### 3. Enterprise Traffic Segmentation
+* **Private vs. Public Boundaries:** Documentation of RFC 1918 address space used inside the internal architecture to prevent direct exposure to the public internet:
+  * `10.0.0.0/8`
+  * `172.16.0.0/12`
+  * `192.168.0.0/16`
 
 ---
 
-### Multicast Addresses
-
-Range:
-
-224.0.0.0 – 239.255.255.255
-
-Used for one-to-many communication.
-
-Example:
-
-224.0.0.1
+## 🛡️ Security Implications & Defensive Blueprinting
+* **Lateral Movement Containment:** Proper subnet masking prevents a compromised machine in a public-facing DMZ from freely accessing sensitive domain controllers or database clusters in internal zones.
+* **Asset Tracking:** Assigning deterministic subnets allows a SOC Analyst to rapidly identify device context (e.g., recognizing that an alert originating from a `10.100.4.0/24` range means a finance department desktop is initiating an external port scan).
 
 ---
 
-### Broadcast Address
-
-Example:
-
-255.255.255.255
-
-Used to send traffic to all devices on a network.
-
-Example DHCP process:
-
-Source: 0.0.0.0  
-Destination: 255.255.255.255
-
----
-
-## 3. CIDR and Prefix Length
-
-CIDR (Classless Inter-Domain Routing) defines how many bits belong to the network.
-
-Example:
-
-192.168.1.0/24
-
-Meaning:
-
-Network bits: 24  
-Host bits: 8
-
----
-
-## 4. Subnetting Fundamentals
-
-Subnetting divides a large network into smaller logical networks.
-
-Benefits include:
-
-- Improved network segmentation
-- Better security control
-- Reduced broadcast traffic
-- Easier troubleshooting
-
----
-
-## 5. Host Calculation
-
-Formula:
-
-Host bits = 32 − prefix
-
-Total addresses = 2^(host bits)
-
-Usable hosts = 2^(host bits) − 2
-
-Example:
-
-/26 network
-
-Host bits = 6  
-Total addresses = 64  
-Usable hosts = 62
-
----
-
-## 6. Example Subnet
-
-Network:
-
-192.168.10.0/26
-
-Range:
-
-Network: 192.168.10.0  
-First Host: 192.168.10.1  
-Last Host: 192.168.10.62  
-Broadcast: 192.168.10.63
-
----
-
-## SOC Analyst Perspective
-
-Understanding IP addressing helps security analysts:
-
-- Identify internal vs external traffic
-- Detect suspicious network activity
-- Understand network segmentation
-- Investigate lateral movement
-- Analyze firewall and SIEM logs
-
-Example investigation:
-
-192.168.10.45 → suspicious external server
-
-Subnet knowledge helps determine the affected network segment.
-
----
-
-## Summary
-
-Today we learned:
-
-- Public vs Private IP addresses
-- Special IPv4 addresses (Loopback, APIPA, Multicast, Broadcast)
-- CIDR notation and prefix length
-- Subnet masks and host calculations
-- Why subnetting is important for security investigations
+## 🛠️ Validation Metrics
+* **Lab Reference Network:** `192.168.193.0/24`
+* **Sensor Node Target:** `192.168.193.131` (Ubuntu Linux running Network Security Monitoring stack)
